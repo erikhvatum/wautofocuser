@@ -143,7 +143,7 @@ if __name__ == '__main__':
     import argparse
     argparser = argparse.ArgumentParser(description='Experiment01_a data and target set generator.')
     argparser.add_argument('--wellDevelopmentalSuccessDb',
-                           default=Path(os.path.expanduser('~')) / 'Data' / 'experiment01_a' / 'wellDevelopmentalSuccessDb.pickle',
+                           default=Path(os.path.expanduser('~')) / 'Data' / 'experiment01_a' / 'well_developmental_success_db.pickle',
                            type=Path)
     argparser.add_argument('--experiment01-a',
                            default=Path(os.path.expanduser('~')) / 'Data' / 'experiment01_a',

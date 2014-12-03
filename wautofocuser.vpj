@@ -192,14 +192,21 @@
 	</Config>
 	<Files>
 		<Folder
-			Name="r_and_d"
-			Filters=""/>
-		<Folder
 			Name="cmake"
 			Filters="">
 			<F N="cmake/FindCython.cmake"/>
 			<F N="cmake/ReplicatePythonSourceTree.cmake"/>
 			<F N="cmake/UseCython.cmake"/>
+		</Folder>
+		<Folder
+			Name="training_and_testing"
+			Filters="">
+			<F N="training_and_testing/image_from_multi_image_statistics.py"/>
+			<F N="training_and_testing/make_experiment_01_a_dataset.py"/>
+			<F N="training_and_testing/make_experiment_01_a_masks.py"/>
+			<F N="training_and_testing/manually_score.py"/>
+			<F N="training_and_testing/manually_score.ui"/>
+			<F N="training_and_testing/manually_score_experiment01_a_bf_focus_quality.py"/>
 		</Folder>
 		<F N="CMakeLists.txt"/>
 		<F N="LICENSE"/>
