@@ -211,6 +211,7 @@
 		<F N="CMakeLists.txt"/>
 		<F N="LICENSE"/>
 		<F N="main.cpp"/>
+		<F N="main.cu"/>
 		<F N="README.md"/>
 	</Files>
 </Project>
