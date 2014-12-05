@@ -26,7 +26,7 @@
 
 #include <cstddef>
 #include <Python.h>
-#include <thrust/host_vector.h>
+#include <thrust/device_vector.h>
 
 class _Highpass
 {
@@ -36,11 +36,10 @@ public:
 
     std::size_t get_w() const;
     std::size_t get_h() const;
-    PyObject* get_filter();
-    void refresh_d_from_h_filter();
+    void set_filter(const float* filter);
+    PyObject* get_filter() const;
 
 protected:
     std::size_t m_h, m_w;
-    thrust::host_vector<float> m_h_filter;
-    thrust::device_vector<float> m_d_filter;
+    thrust::device_vector<float> m_filter;
 };

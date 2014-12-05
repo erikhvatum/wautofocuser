@@ -25,6 +25,7 @@
 #include "_Highpass.h"
 #include "GilStateScopeOperators.h"
 #include <iostream>
+#include <thrust/host_vector.h>
 
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define PY_ARRAY_UNIQUE_SYMBOL wautofocuser_ARRAY_API
@@ -50,7 +51,6 @@ _Highpass::_Highpass(std::size_t w, std::size_t h)
         do_import_array();
         array_imported = true;
     }
-    m_filter[0] = 101;
 }
 
 _Highpass::~_Highpass()
@@ -67,16 +67,18 @@ std::size_t _Highpass::get_h() const
     return m_h;
 }
 
-PyObject* _Highpass::get_filter()
+PyObject* _Highpass::get_filter() const
 {
-    std::cerr << "PyObject* _Highpass::get_filter()\n";
-    GilLocker gilLocker();
-    std::cerr << "GilLocker()\n";
+    GilLocker gil_locker;
+    PyObject* ret;
     npy_intp dims[] = {static_cast<npy_intp>(m_h), static_cast<npy_intp>(m_w)};
-    PyObject* ret = PyArray_SimpleNewFromData(1, dims, NPY_FLOAT32, reinterpret_cast<void*>(m_filter.data()));
-//  PyObject* ret = PyArray_SimpleNew(1, &dim, NPY_FLOAT32);
-    std::cerr << "PyObject* ret = PyArray_SimpleNewFromData(1, &dim, NPY_FLOAT32, reinterpret_cast<void*>(m_filter.data()));\n";
-//  Py_XINCREF(ret);
-    std::cerr << "Py_XINCREF(ret);\n";
+    ret = PyArray_SimpleNew(2, dims, NPY_FLOAT32);
+    thrust::host_vector<float> temp(m_filter);
+    memcpy(PyArray_DATA(reinterpret_cast<PyArrayObject*>(ret)), (const void*)temp.data(), m_w * m_h);
     return ret;
+}
+
+void _Highpass::set_filter(const float* filter)
+{
+    m_filter.assign(filter, filter + m_w * m_h);
 }

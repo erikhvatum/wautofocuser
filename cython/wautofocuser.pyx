@@ -23,19 +23,21 @@
 # Authors: Erik Hvatum <ice.rikh@gmail.com>
 
 import cython
+cimport numpy
 import numpy
 
 cdef extern from "cpp_lib/_Highpass.h":
     cdef cppclass _Highpass:
         _Highpass(size_t w, size_t h)
-        object get_filter()
         size_t get_w() const
         size_t get_h() const
+        object get_filter() const
+        void set_filter(const float*)
 
 cdef class Highpass:
     cdef _Highpass *thisptr
 
-    def __cinit__(self, w, h):
+    def __cinit__(self, h, w):
         self.thisptr = new _Highpass(w, h)
 
     def __dealloc__(self):
@@ -52,3 +54,8 @@ cdef class Highpass:
     property filter:
         def __get__(self):
             return self.thisptr.get_filter()
+
+        def __set__(self, numpy.ndarray[numpy.float32_t, ndim=2, mode="c"] f):
+            if f.shape[0] != self.h or f.shape[1] != self.w:
+                raise ValueError("Dimensions of provided filter must match the h and w parameters passed to Highpass's constructor.")
+            self.thisptr.set_filter(&f[0,0])
