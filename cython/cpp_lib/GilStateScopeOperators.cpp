@@ -20,27 +20,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // 
-// Authors: Erik Hvatum <ice.rikh@gmail.com> 
- 
-#pragma once
+// Authors: Erik Hvatum <ice.rikh@gmail.com>
 
-#include <cstddef>
-#include <Python.h>
-#include <thrust/host_vector.h>
+#include "GilStateScopeOperators.h"
+#include <string>
 
-class _Highpass
+GilLocker::GilLocker()
+  : m_PyGILState_STATE(PyGILState_Ensure())
 {
-public:
-    _Highpass(std::size_t w, std::size_t h);
-    virtual ~_Highpass();
+}
 
-    std::size_t get_w() const;
-    std::size_t get_h() const;
-    PyObject* get_filter();
-    void refresh_d_from_h_filter();
+GilLocker::~GilLocker()
+{
+#ifdef DEBUG
+    if(PyGILState_Check() == 0)
+    {
+        throw std::string("GilLocker::~GilLocker(): About to release the GIL, but the GIL is not "
+                                 "currently held by this thread.");
+    }
+#endif
+    PyGILState_Release(m_PyGILState_STATE);
+}
 
-protected:
-    std::size_t m_h, m_w;
-    thrust::host_vector<float> m_h_filter;
-    thrust::device_vector<float> m_d_filter;
-};
+GilUnlocker::GilUnlocker()
+  : m_pyThreadState(PyEval_SaveThread())
+{
+    if(m_pyThreadState == nullptr)
+    {
+        throw std::string("GilUnlocker::GilUnlocker(): PyEval_SaveThread() returned nullptr.");
+    }
+}
+
+GilUnlocker::~GilUnlocker()
+{
+    PyEval_RestoreThread(m_pyThreadState);
+}

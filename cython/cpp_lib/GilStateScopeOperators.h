@@ -20,27 +20,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // 
-// Authors: Erik Hvatum <ice.rikh@gmail.com> 
- 
+// Authors: Erik Hvatum <ice.rikh@gmail.com>
+
 #pragma once
 
-#include <cstddef>
 #include <Python.h>
-#include <thrust/host_vector.h>
 
-class _Highpass
+class GilLocker
 {
 public:
-    _Highpass(std::size_t w, std::size_t h);
-    virtual ~_Highpass();
+    GilLocker();
+    ~GilLocker();
+    GilLocker(const GilLocker&) = delete;
+    GilLocker& operator = (const GilLocker&) = delete;
 
-    std::size_t get_w() const;
-    std::size_t get_h() const;
-    PyObject* get_filter();
-    void refresh_d_from_h_filter();
+private:
+    PyGILState_STATE m_PyGILState_STATE;
+};
 
-protected:
-    std::size_t m_h, m_w;
-    thrust::host_vector<float> m_h_filter;
-    thrust::device_vector<float> m_d_filter;
+class GilUnlocker
+{
+public:
+    GilUnlocker();
+    ~GilUnlocker();
+    GilUnlocker(const GilUnlocker&) = delete;
+    GilUnlocker& operator = (const GilUnlocker&) = delete;
+
+private:
+    PyThreadState* m_pyThreadState;
 };

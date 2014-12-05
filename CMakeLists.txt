@@ -85,6 +85,20 @@ else()
     unset(_PYTHON_LIB_NAME)
     message(STATUS "Found PythonLibs: ${PYTHON_LIBRARY} (do not be alarmed if the filename ends in .a; dynamic linking will be used nonetheless, if possible)")
 endif()
-include_directories(SYSTEM ${PYTHON_INCLUDE_DIRS})
+execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import numpy;print(numpy.get_include())"
+                RESULT_VARIABLE _NUMPY_INCLUDE_DIR_FOUND
+                ERROR_VARIABLE _NUMPY_INCLUDE_DIR_ERROR
+                OUTPUT_VARIABLE NUMPY_INCLUDE_DIR
+                OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(NOT _NUMPY_INCLUDE_DIR_FOUND MATCHES 0)
+    message(FATAL_ERROR "Failed to import numpy (which must be done in order to locate the numpy C API header directory):\n${_NUMPY_INCLUDE_DIR_ERROR}")
+    return()
+endif()
+unset(_NUMPY_INCLUDE_DIR_FOUND)
+unset(_NUMPY_INCLUDE_DIR_ERROR)
+
+include_directories(SYSTEM ${PYTHON_INCLUDE_DIRS}
+                           ${NUMPY_INCLUDE_DIR}
+                           ${CUDA_INCLUDE_DIRS})
 
 add_subdirectory(cython)

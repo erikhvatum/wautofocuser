@@ -20,11 +20,63 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // 
-// Authors: Erik Hvatum <ice.rikh@gmail.com> 
+// Authors: Erik Hvatum <ice.rikh@gmail.com>
  
 #include "_Highpass.h"
+#include "GilStateScopeOperators.h"
+#include <iostream>
 
-int _Highpass::get_foo()
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#define PY_ARRAY_UNIQUE_SYMBOL wautofocuser_ARRAY_API
+#include <numpy/arrayobject.h>
+
+static void* do_import_array()
 {
-    return 42;
+    // import_array() is actually a macro that returns NULL if it fails, so it has to be wrapped in order to be called
+    // from a constructor which necessarily does not return anything
+    import_array();
+    return reinterpret_cast<void*>(1);
+}
+
+static bool array_imported{false};
+
+_Highpass::_Highpass(std::size_t w, std::size_t h)
+  : m_w(w),
+    m_h(h),
+    m_filter(w * h)
+{
+    if(!array_imported)
+    {
+        do_import_array();
+        array_imported = true;
+    }
+    m_filter[0] = 101;
+}
+
+_Highpass::~_Highpass()
+{
+}
+
+std::size_t _Highpass::get_w() const
+{
+    return m_w;
+}
+
+std::size_t _Highpass::get_h() const
+{
+    return m_h;
+}
+
+PyObject* _Highpass::get_filter()
+{
+    std::cerr << "PyObject* _Highpass::get_filter()\n";
+    GilLocker gilLocker();
+    std::cerr << "GilLocker()\n";
+    npy_intp dims[] = {static_cast<npy_intp>(m_h), static_cast<npy_intp>(m_w)};
+    PyObject* ret = PyArray_SimpleNewFromData(1, dims, NPY_FLOAT32, reinterpret_cast<void*>(m_filter.data()));
+//  PyObject* ret = PyArray_SimpleNew(1, &dim, NPY_FLOAT32);
+    std::cerr << "PyObject* ret = PyArray_SimpleNewFromData(1, &dim, NPY_FLOAT32, reinterpret_cast<void*>(m_filter.data()));\n";
+//  Py_XINCREF(ret);
+    std::cerr << "Py_XINCREF(ret);\n";
+    return ret;
 }

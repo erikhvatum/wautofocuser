@@ -22,19 +22,33 @@
 #
 # Authors: Erik Hvatum <ice.rikh@gmail.com>
 
+import cython
+import numpy
+
 cdef extern from "cpp_lib/_Highpass.h":
     cdef cppclass _Highpass:
-        _Highpass()
-        int get_foo()
+        _Highpass(size_t w, size_t h)
+        object get_filter()
+        size_t get_w() const
+        size_t get_h() const
 
 cdef class Highpass:
     cdef _Highpass *thisptr
 
-    def __cinit__(self):
-        self.thisptr = new _Highpass()
+    def __cinit__(self, w, h):
+        self.thisptr = new _Highpass(w, h)
 
     def __dealloc__(self):
         del self.thisptr
 
-    def get_foo(self):
-        return self.thisptr.get_foo()
+    property w:
+        def __get__(self):
+            return self.thisptr.get_w()
+
+    property h:
+        def __get__(self):
+            return self.thisptr.get_h()
+
+    property filter:
+        def __get__(self):
+            return self.thisptr.get_filter()
