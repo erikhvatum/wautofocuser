@@ -20,33 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 // 
-// Authors: Erik Hvatum <ice.rikh@gmail.com>
+// Authors: Erik Hvatum <ice.rikh@gmail.com> 
  
-#include <stdio.h>
-#include <opencv2/opencv.hpp>
+#include "_Highpass.h"
 
-using namespace cv;
-
-int main(int argc, char** argv)
+int _Highpass::get_foo()
 {
-    if(argc != 2)
-    {
-        printf("usage: wautofocuser <Image_Path>\n");
-        return -1;
-    }
-
-    Mat image;
-    image = imread(argv[1], 1);
-
-    if(!image.data)
-    {
-        printf("No image data \n");
-        return -1;
-    }
-    namedWindow("wautofocuser", WINDOW_AUTOSIZE);
-    imshow("wautofocuser", image);
-
-    waitKey(0);
-
-    return 0;
+    return 42;
 }

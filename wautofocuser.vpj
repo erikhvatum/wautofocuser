@@ -199,6 +199,19 @@
 			<F N="cmake/UseCython.cmake"/>
 		</Folder>
 		<Folder
+			Name="cython"
+			Filters="*.pyx">
+			<Folder
+				Name="cpp_lib"
+				Filters="*.cpp;*.h;*.cu">
+				<F N="cython/cpp_lib/_Highpass.cu"/>
+				<F N="cython/cpp_lib/_Highpass.h"/>
+				<F N="cython/cpp_lib/CMakeLists.txt"/>
+			</Folder>
+			<F N="cython/CMakeLists.txt"/>
+			<F N="cython/wautofocuser.pyx"/>
+		</Folder>
+		<Folder
 			Name="training_and_testing"
 			Filters="">
 			<F N="training_and_testing/image_from_multi_image_statistics.py"/>
@@ -208,10 +221,12 @@
 			<F N="training_and_testing/manually_score.ui"/>
 			<F N="training_and_testing/manually_score_experiment01_a_bf_focus_quality.py"/>
 		</Folder>
+		<F N="__init__.py"/>
 		<F N="CMakeLists.txt"/>
 		<F N="LICENSE"/>
 		<F N="main.cpp"/>
 		<F N="main.cu"/>
 		<F N="README.md"/>
+		<F N="training_and_testing"/>
 	</Files>
 </Project>

@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# Authors: Erik Hvatum
+# Authors: Erik Hvatum <ice.rikh@gmail.com>
 
 import collections
 from misc.image_from_multi_image_statistics import generate_running_percentile_difference
