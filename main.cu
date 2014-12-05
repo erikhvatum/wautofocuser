@@ -55,7 +55,7 @@ void write_float_blob(const char* fn, const float* b, std::size_t size)
     }
 }
 
-void read_float_blob(const char* fn, thrust::host_vector<cuFloatComplex>& b)
+void read_complex_float_blob(const char* fn, thrust::host_vector<cuFloatComplex>& b)
 {
     std::fstream f(fn, std::ios_base::in | std::ios_base::binary);
     if(!f.read(reinterpret_cast<char*>(b.data()), b.size() * sizeof(float) * 2))
@@ -80,13 +80,12 @@ int main(int argc, char** argv)
     try
     {
         std::size_t im_size(2560 * 2160);
-        std::unique_ptr<float[]> im_h_in{new float[im_size]};
-        read_float_blob("/home/ehvatum/zplrepo/wautofocuser/build/in.floatblob", im_h_in.get(), im_size);
-        thrust::device_vector<float> im_d_in(im_h_in.get(), im_h_in.get() + im_size);
-        thrust::device_vector<cuFloatComplex> im_d_out(im_size);
+        thrust::host_vector<cuFloatComplex> im_h_in(im_size);
+        read_complex_float_blob("/home/ehvatum/zplrepo/wautofocuser/build/in.complexfloatblob", im_h_in);
+        thrust::device_vector<cuFloatComplex> im_d_in(im_h_in);
 
         cufftHandle plan;
-        if(cufftPlan2d(&plan, 2560, 2160, CUFFT_R2C) != CUFFT_SUCCESS)
+        if(cufftPlan2d(&plan, 2160, 2560, CUFFT_C2C) != CUFFT_SUCCESS)
         {
             throw std::string("cufftPlan2d(..) failed.");
         }
@@ -100,9 +99,13 @@ int main(int argc, char** argv)
             }
         } destroy_plan(plan);
 
-        if(cufftExecR2C(plan, thrust::raw_pointer_cast(im_d_in.data()), thrust::raw_pointer_cast(im_d_out.data())) != CUFFT_SUCCESS)
+        thrust::device_vector<cuFloatComplex> im_d_out(im_size);
+        if(cufftExecC2C(plan,
+                        thrust::raw_pointer_cast(im_d_in.data()),
+                        thrust::raw_pointer_cast(im_d_out.data()),
+                        CUFFT_FORWARD) != CUFFT_SUCCESS)
         {
-            throw std::string("cuff2ExecR2C(..) failed.");
+            throw std::string("cufftExecC2C(..) failed.");
         }
 
         thrust::host_vector<cuFloatComplex> im_h_out(im_d_out);
