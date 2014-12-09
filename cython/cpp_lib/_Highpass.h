@@ -25,6 +25,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cufft.h>
 #include <Python.h>
 #include <thrust/device_vector.h>
 
@@ -38,8 +39,13 @@ public:
     std::size_t get_h() const;
     void set_filter(const float* filter);
     PyObject* get_filter() const;
+    PyObject* apply(const float* image) const;
 
 protected:
-    std::size_t m_h, m_w;
+    std::size_t m_h;
+    std::size_t m_w;
+    std::size_t m_s;
     thrust::device_vector<float> m_filter;
+    cufftHandle m_forward_plan;
+    cufftHandle m_inverse_plan;
 };
