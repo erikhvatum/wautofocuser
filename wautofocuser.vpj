@@ -226,9 +226,6 @@
 		<F N="__init__.py"/>
 		<F N="CMakeLists.txt"/>
 		<F N="LICENSE"/>
-		<F N="main.cpp"/>
-		<F N="main.cu"/>
 		<F N="README.md"/>
-		<F N="training_and_testing"/>
 	</Files>
 </Project>

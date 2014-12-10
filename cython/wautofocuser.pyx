@@ -38,15 +38,19 @@ cdef extern from "cpp_lib/_Highpass.h":
 cdef class Highpass:
     cdef _Highpass *thisptr
 
-    def __cinit__(self, cutoff, h, w):
+    def __cinit__(self, cutoff, w, h):
         self.thisptr = new _Highpass(w, h)
         f = self._highpass_butterworth_nd(1.0 / cutoff, (h, w), 1, 2).astype(numpy.float32)
+        f[0, 0] = 0
         self.filter = f
 
     def __dealloc__(self):
         del self.thisptr
 
-    def __call__(self, numpy.ndarray[numpy.float32_t, ndim=2, mode="c"] image):
+    def __call__(self, numpy.ndarray[numpy.float32_t, ndim=2] image):
+        if   numpy.isfortran(image) and (image.shape[0] != self.w or image.shape[1] != self.h) or \
+         not numpy.isfortran(image) and (image.shape[0] != self.h or image.shape[1] != self.w):
+            raise ValueError("Dimensions of image to be filtered must match the h and w parameters passed to Highpass's constructor.")
         return self.thisptr.apply(&image[0,0])
 
     property w:
@@ -61,8 +65,9 @@ cdef class Highpass:
         def __get__(self):
             return self.thisptr.get_filter()
 
-        def __set__(self, numpy.ndarray[numpy.float32_t, ndim=2, mode="c"] f):
-            if f.shape[0] != self.h or f.shape[1] != self.w:
+        def __set__(self, numpy.ndarray[numpy.float32_t, ndim=2] f):
+            if   numpy.isfortran(f) and (f.shape[0] != self.w or f.shape[1] != self.h) or \
+             not numpy.isfortran(f) and (f.shape[0] != self.h or f.shape[1] != self.w):
                 raise ValueError("Dimensions of provided filter must match the h and w parameters passed to Highpass's constructor.")
             self.thisptr.set_filter(&f[0,0])
 
