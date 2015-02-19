@@ -221,6 +221,7 @@
 			<F N="training_and_testing/make_experiment_01_a_dataset.py"/>
 			<F N="training_and_testing/make_experiment_01_a_masks.py"/>
 			<F N="training_and_testing/make_life_assay_pilot_background_subtraction_comparison.py"/>
+			<F N="training_and_testing/make_lipofuscin_fluorescence_background_subtraction_comparison.py"/>
 			<F N="training_and_testing/manually_score.py"/>
 			<F N="training_and_testing/manually_score.ui"/>
 			<F N="training_and_testing/manually_score_experiment01_a_bf_focus_quality.py"/>
