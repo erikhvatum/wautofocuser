@@ -22,7 +22,7 @@
 // 
 // Authors: Erik Hvatum <ice.rikh@gmail.com>
  
-#include "_Highpass.h"
+#include "_SpatialFilter.h"
 #include "GilStateScopeOperators.h"
 #include <cuda_runtime.h>
 #include <cufft.h>
@@ -102,7 +102,7 @@ static void* do_static_init()
 
 static bool static_inited{false};
 
-_Highpass::_Highpass(std::size_t w, std::size_t h)
+_SpatialFilter::_SpatialFilter(std::size_t w, std::size_t h)
   : m_w(w),
     m_h(h),
     m_s(w * h),
@@ -125,7 +125,7 @@ _Highpass::_Highpass(std::size_t w, std::size_t h)
     }
 }
 
-_Highpass::~_Highpass()
+_SpatialFilter::~_SpatialFilter()
 {
     if(m_forward_plan)
     {
@@ -139,17 +139,17 @@ _Highpass::~_Highpass()
     }
 }
 
-std::size_t _Highpass::get_w() const
+std::size_t _SpatialFilter::get_w() const
 {
     return m_w;
 }
 
-std::size_t _Highpass::get_h() const
+std::size_t _SpatialFilter::get_h() const
 {
     return m_h;
 }
 
-PyObject* _Highpass::get_filter() const
+PyObject* _SpatialFilter::get_filter() const
 {
     GilLocker gil_locker;
     PyObject* ret;
@@ -160,7 +160,7 @@ PyObject* _Highpass::get_filter() const
     return ret;
 }
 
-void _Highpass::set_filter(const float* filter)
+void _SpatialFilter::set_filter(const float* filter)
 {
     m_filter.assign(filter, filter + m_w * m_h);
 }
@@ -220,7 +220,7 @@ struct RealComplexMult
 //     }
 // };
 
-PyObject* _Highpass::apply(const float* image) const
+PyObject* _SpatialFilter::apply(const float* image) const
 {
 //  thrust::host_vector<float> im_h(image, image + m_w * m_h);
 //  thrust::device_vector<float> im_d(im_h);

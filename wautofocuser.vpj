@@ -204,8 +204,8 @@
 			<Folder
 				Name="cpp_lib"
 				Filters="*.cpp;*.h;*.cu">
-				<F N="cython/cpp_lib/_Highpass.cu"/>
-				<F N="cython/cpp_lib/_Highpass.h"/>
+				<F N="cython/cpp_lib/_SpatialFilter.cu"/>
+				<F N="cython/cpp_lib/_SpatialFilter.h"/>
 				<F N="cython/cpp_lib/CMakeLists.txt"/>
 				<F N="cython/cpp_lib/GilStateScopeOperators.cpp"/>
 				<F N="cython/cpp_lib/GilStateScopeOperators.h"/>

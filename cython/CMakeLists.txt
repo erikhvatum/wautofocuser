@@ -27,7 +27,7 @@ add_subdirectory(cpp_lib)
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/wautofocuser.cpp
                    COMMAND cython-3.4 --cplus -3 ${CMAKE_CURRENT_SOURCE_DIR}/wautofocuser.pyx -o ${CMAKE_CURRENT_BINARY_DIR}/wautofocuser.cpp
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/wautofocuser.pyx
-                           ${CMAKE_CURRENT_SOURCE_DIR}/cpp_lib/_Highpass.h)
+                           ${CMAKE_CURRENT_SOURCE_DIR}/cpp_lib/_SpatialFilter.h)
 
 add_library(wautofocuser SHARED ${CMAKE_CURRENT_BINARY_DIR}/wautofocuser.cpp)
 target_link_libraries(wautofocuser cpp_lib

@@ -22,7 +22,7 @@
 #
 # Authors: Erik Hvatum <ice.rikh@gmail.com>
 
-cuda_add_library(cpp_lib _Highpass.cu
+cuda_add_library(cpp_lib _SpatialFilter.cu
                          GilStateScopeOperators.cpp
                  STATIC)
 cuda_add_cufft_to_target(cpp_lib)

@@ -29,11 +29,11 @@
 #include <Python.h>
 #include <thrust/device_vector.h>
 
-class _Highpass
+class _SpatialFilter
 {
 public:
-    _Highpass(std::size_t w, std::size_t h);
-    virtual ~_Highpass();
+    _SpatialFilter(std::size_t w, std::size_t h);
+    virtual ~_SpatialFilter();
 
     std::size_t get_w() const;
     std::size_t get_h() const;
